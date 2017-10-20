@@ -96,7 +96,10 @@ class GameState {
   rotateActiveShape() {
     this.removeActiveShape();
 
+
+
     const layers = this.activeShape.shape.length;
+    let layerLength = layers - 1;
     let layer = 0;
     let currentBuffer = 0;
     let nextBuffer = 0;
@@ -106,7 +109,7 @@ class GameState {
     while (layer < Math.floor(layers / 2)) {
       console.log('ROTATING LAYER', layer);
 
-      for (var i = 0; i < Math.ceil(layers/2); i++) {
+      for (var i = 0; i < layerLength; i++) {
 
         currentCoords.row = layer;
         currentCoords.column = layer + i;
@@ -120,7 +123,7 @@ class GameState {
           nextBuffer = this.activeShape.shape[newCoords.row][newCoords.column];
           this.activeShape.shape[newCoords.row][newCoords.column] = currentBuffer;
 
-          console.log('CORNER', i, '| VALUE', currentBuffer, currentCoords);
+          console.log('CORNER', j, '| VALUE', currentBuffer, currentCoords);
           console.log('DEST', '| VALUE', nextBuffer, newCoords);
 
           currentBuffer = nextBuffer;
@@ -130,10 +133,12 @@ class GameState {
 
           console.table(this.activeShape.shape);
         }
-
+        console.log('ROTATED CORNERS');
       }
 
+      console.log('ROTATED LAYERS');
       ++layer;
+      layerLength = layerLength - 2;
     }
 
     this.insertActiveShape();
