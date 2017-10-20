@@ -57,7 +57,11 @@ class GameState {
     return newBoard;
   }
 
-  setNewActiveShape(shapeMatrix) {
+  setNewActiveShape(shapeMatrix, position) {
+    if (this.collisionCheck(shapeMatrix, position)) {
+      return false;
+    }
+
     this.activeShape.shape = [];
 
     for (var row in shapeMatrix) {
@@ -69,11 +73,10 @@ class GameState {
 
     console.log(this.activeShape.shape);
 
-    this.activeShape.position = {
-      "row": 0,
-      "column": Math.floor(this.board[0].length / 2) - Math.floor(shapeMatrix[0].length / 2)
-    };
+    this.activeShape.position = position
     this.moveActiveShape(this.activeShape.position);
+
+    return true;
   }
 
   moveActiveShape(newPosition) {
@@ -152,9 +155,17 @@ class GameState {
           let boardRow = rowIndex + projectedPosition.row;
           let boardColumn = columnIndex + projectedPosition.column;
 
-          if (boardRow < 0 || boardRow > this.board.length - 1
-            || boardColumn < 0 || boardColumn > this.board[0].length - 1) {
-            console.log('Boundary collision!');
+          if (boardRow < 0) {
+            console.log('Ceiling collision!');
+            return true;
+          } else if (boardRow > this.board.length -1) {
+            console.log('Floor collision!');
+            return true;
+          } else if (boardColumn < 0) {
+            console.log('Left wall collision!');
+            return true;
+          } else if (boardColumn > this.board[boardRow].length - 1) {
+            console.log('Right wall collision!');
             return true;
           }
 
@@ -347,7 +358,19 @@ class Game {
   spawnNewShape(shapeMatrix) {
     console.log('Spawning new shape:');
     console.table(shapeMatrix);
-    this.gameState.setNewActiveShape(shapeMatrix);
+
+    let spawnPosition = {
+      "row": 0,
+      "column": Math.floor(this.gameState.board[0].length / 2) - Math.floor(shapeMatrix[0].length / 2)
+    };
+
+    var success = this.gameState.setNewActiveShape(shapeMatrix, spawnPosition);
+
+    console.log(success);
+
+    if (!success) {
+      this.end();
+    }
   }
 
   updateScore() {
@@ -363,13 +386,18 @@ class Game {
   }
 
   pause() {
+    this.gameState.isPaused = !this.gameState.isPaused;
+
     if (this.gameState.isPaused) {
-      console.log('Unpaused');
-      this.gameState.isPaused = false;
-    } else {
       console.log('Paused');
-      this.gameState.isPaused = true;
+    } else {
+      console.log('Unpaused');
     }
+  }
+
+  end() {
+    console.log('Game end');
+    this.pause();
   }
 
   tick(deltaTime) {
