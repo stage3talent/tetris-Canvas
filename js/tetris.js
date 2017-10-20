@@ -40,6 +40,8 @@ class GameState {
 
     this.board = this.buildBoard(dimensions, scale);
     this.activeShape = {"shape": [], "position": {}};
+
+    this.isPaused = false;
   }
 
   buildBoard(dimensions) {
@@ -53,7 +55,17 @@ class GameState {
   }
 
   setNewActiveShape(shapeMatrix) {
-    this.activeShape.shape = shapeMatrix;
+    this.activeShape.shape = [];
+
+    for (var row in shapeMatrix) {
+      this.activeShape.shape.push(new Array(shapeMatrix[row].length).fill(0));
+      for (var column in this.activeShape.shape[row]) {
+        this.activeShape.shape[row][column] = shapeMatrix[row][column];
+      }
+    }
+
+    console.log(this.activeShape.shape);
+
     this.activeShape.position = {
       "row": 0,
       "column": Math.floor(this.board[0].length / 2) - Math.floor(shapeMatrix[0].length / 2)
@@ -78,13 +90,51 @@ class GameState {
     return true;
   }
 
-  // rotateActiveShape() {
-  //   for (var row in this.activeShape.shape) {
-  //     for (var cell in row) {
+  rotateActiveShape() {
+    this.removeActiveShape();
 
-  //     }
-  //   }
-  // }
+    const layers = this.activeShape.shape.length;
+    let layer = 0;
+    let currentBuffer = 0;
+    let nextBuffer = 0;
+    let currentCoords = {'row': 0, 'column': 0};
+    let newCoords = {'row': 0, 'column': 0};
+
+    while (layer < Math.floor(layers / 2)) {
+      console.log('ROTATING LAYER', layer);
+
+      for (var i = 0; i < Math.ceil(layers/2); i++) {
+
+        currentCoords.row = layer;
+        currentCoords.column = layer + i;
+        currentBuffer = this.activeShape.shape[currentCoords.row][currentCoords.column];
+
+
+        for (var j = 0; j < 4; j++) {
+          newCoords.row = currentCoords.column;
+          newCoords.column = (layers - 1) - currentCoords.row;
+
+          nextBuffer = this.activeShape.shape[newCoords.row][newCoords.column];
+          this.activeShape.shape[newCoords.row][newCoords.column] = currentBuffer;
+
+          console.log('CORNER', i, '| VALUE', currentBuffer, currentCoords);
+          console.log('DEST', '| VALUE', nextBuffer, newCoords);
+
+          currentBuffer = nextBuffer;
+
+          currentCoords.row = newCoords.row;
+          currentCoords.column = newCoords.column;
+
+          console.table(this.activeShape.shape);
+        }
+
+      }
+
+      ++layer;
+    }
+
+    this.insertActiveShape();
+  }
 
   collisionCheck(projectedPosition) {
     for (var rowIndex in this.activeShape.shape) {
@@ -237,6 +287,8 @@ class Game {
   }
 
   shift(direction) {
+    if (this.gameState.isPaused) { return; }
+
     let row = this.gameState.activeShape.position.row;
     let column = this.gameState.activeShape.position.column;
     
@@ -252,6 +304,12 @@ class Game {
       row,
       column
     });
+  }
+
+  rotate() {
+    if (this.gameState.isPaused) { return; }
+
+    this.gameState.rotateActiveShape();
   }
 
   lineCheck() {
@@ -271,7 +329,19 @@ class Game {
     this.gameState.setNewActiveShape(shapeMatrix);
   }
 
+  pause() {
+    if (this.gameState.isPaused) {
+      console.log('Unpaused');
+      this.gameState.isPaused = false;
+    } else {
+      console.log('Paused');
+      this.gameState.isPaused = true;
+    }
+  }
+
   tick(deltaTime) {
+    if (this.gameState.isPaused) { return; }
+
     if (this.timeSinceShift > this.shiftDelay) {
       this.timeSinceShift = 0;
       if (!this.shift('down')) {
@@ -307,6 +377,10 @@ document.addEventListener('keydown', (keyEvent) => {
     game.shift('right');
   } else if (keyEvent.key === "ArrowDown") {
     game.shift('down');
+  } else if (keyEvent.key === "ArrowUp") {
+    game.rotate();
+  } else if (keyEvent.key.toLowerCase() === "p") {
+    game.pause();
   } else if (keyEvent.key === '1') {
     this.game.spawnNewShape(shapes[0]);
   } else if (keyEvent.key === '2') {
