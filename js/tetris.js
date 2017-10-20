@@ -82,7 +82,7 @@ class GameState {
     // prevent from colliding with self
     this.removeActiveShape();
 
-    if (this.collisionCheck(newPosition)) {
+    if (this.collisionCheck(this.activeShape.shape, newPosition)) {
       this.insertActiveShape();
       return false; 
     }
@@ -96,58 +96,56 @@ class GameState {
   rotateActiveShape() {
     this.removeActiveShape();
 
+    var rotatedShape = [];
 
+    for (var row in this.activeShape.shape) {
+      rotatedShape.push(new Array(this.activeShape.shape[row].length).fill(0));
+    }
 
     const layers = this.activeShape.shape.length;
     let layerLength = layers - 1;
     let layer = 0;
-    let currentBuffer = 0;
-    let nextBuffer = 0;
     let currentCoords = {'row': 0, 'column': 0};
     let newCoords = {'row': 0, 'column': 0};
 
     while (layer < Math.floor(layers / 2)) {
-      console.log('ROTATING LAYER', layer);
 
       for (var i = 0; i < layerLength; i++) {
-
         currentCoords.row = layer;
         currentCoords.column = layer + i;
-        currentBuffer = this.activeShape.shape[currentCoords.row][currentCoords.column];
-
 
         for (var j = 0; j < 4; j++) {
           newCoords.row = currentCoords.column;
           newCoords.column = (layers - 1) - currentCoords.row;
 
-          nextBuffer = this.activeShape.shape[newCoords.row][newCoords.column];
-          this.activeShape.shape[newCoords.row][newCoords.column] = currentBuffer;
+          let currentValue = this.activeShape.shape[currentCoords.row][currentCoords.column];
 
-          console.log('CORNER', j, '| VALUE', currentBuffer, currentCoords);
-          console.log('DEST', '| VALUE', nextBuffer, newCoords);
-
-          currentBuffer = nextBuffer;
+          rotatedShape[newCoords.row][newCoords.column] = currentValue;
 
           currentCoords.row = newCoords.row;
           currentCoords.column = newCoords.column;
-
-          console.table(this.activeShape.shape);
         }
-        console.log('ROTATED CORNERS');
       }
 
-      console.log('ROTATED LAYERS');
       ++layer;
       layerLength = layerLength - 2;
     }
 
+    if (layers % 2 !== 0) {
+      rotatedShape[layer][layer] = this.activeShape.shape[layer][layer];
+    }
+
+    if (!this.collisionCheck(rotatedShape, this.activeShape.position)) {
+      this.activeShape.shape = rotatedShape;
+    }    
+
     this.insertActiveShape();
   }
 
-  collisionCheck(projectedPosition) {
-    for (var rowIndex in this.activeShape.shape) {
-      for (var columnIndex in this.activeShape.shape[rowIndex]) {
-        if (this.activeShape.shape[rowIndex][columnIndex] !== 0) {
+  collisionCheck(shape, projectedPosition) {
+    for (var rowIndex in shape) {
+      for (var columnIndex in shape[rowIndex]) {
+        if (shape[rowIndex][columnIndex] !== 0) {
           rowIndex = parseInt(rowIndex);
           columnIndex = parseInt(columnIndex);
 
