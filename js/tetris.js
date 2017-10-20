@@ -75,8 +75,6 @@ class GameState {
       }
     }
 
-    console.log(this.activeShape.shape);
-
     this.activeShape.position = position
     this.moveActiveShape(this.activeShape.position);
 
@@ -359,22 +357,15 @@ class Game {
     }
 
     this.updateScore();
-
-    console.log('scoredeta', this.gameState.scoreDelta);
   }
 
   spawnNewShape(shapeMatrix) {
-    console.log('Spawning new shape:');
-    console.table(shapeMatrix);
-
     let spawnPosition = {
       "row": 0,
       "column": Math.floor(this.gameState.board[0].length / 2) - Math.floor(shapeMatrix[0].length / 2)
     };
 
     var success = this.gameState.setNewActiveShape(shapeMatrix, spawnPosition);
-
-    console.log(success);
 
     if (!success) {
       this.end();
@@ -415,8 +406,6 @@ class Game {
       this.timeSinceShift = 0;
 
       if (this.gameState.scoreDelta !== 0) {
-        console.log('score update');
-
         this.gameState.score += this.gameState.scoreDelta;
         this.gameState.scoreDelta = 0;
         this.updateScore();
@@ -429,8 +418,6 @@ class Game {
 
         if (this.shiftDelay > 10){
           this.shiftDelay--;
-
-          console.log(this.shiftDelay);
         }
       }
     }
@@ -455,8 +442,6 @@ function tick(time = 0) {
 var canvas = document.getElementById("tetris");
 var scoreTracker = document.getElementById("score-tracker");
 
-console.log(scoreTracker);
-
 document.addEventListener('keydown', (keyEvent) => {
   if (keyEvent.key === "ArrowLeft") {
     game.shift('left');
@@ -468,19 +453,20 @@ document.addEventListener('keydown', (keyEvent) => {
     game.rotate();
   } else if (keyEvent.key.toLowerCase() === "p") {
     game.pause();
-  } else if (keyEvent.key === '1') {
-    this.game.spawnNewShape(shapes[0]);
-  } else if (keyEvent.key === '2') {
-    this.game.spawnNewShape(shapes[1]);
-  } else if (keyEvent.key === '3') {
-    this.game.spawnNewShape(shapes[2]);
-  } else if (keyEvent.key === '4') {
-    this.game.spawnNewShape(shapes[3]);
-  } else if (keyEvent.key === '5') {
-    this.game.spawnNewShape(shapes[4]);
-  } else if (keyEvent.key === 'r') {
-    this.game.spawnNewShape(pickRandomShape());
-  } 
+  }
+  // } else if (keyEvent.key === '1') {
+  //   this.game.spawnNewShape(shapes[0]);
+  // } else if (keyEvent.key === '2') {
+  //   this.game.spawnNewShape(shapes[1]);
+  // } else if (keyEvent.key === '3') {
+  //   this.game.spawnNewShape(shapes[2]);
+  // } else if (keyEvent.key === '4') {
+  //   this.game.spawnNewShape(shapes[3]);
+  // } else if (keyEvent.key === '5') {
+  //   this.game.spawnNewShape(shapes[4]);
+  // } else if (keyEvent.key === 'r') {
+  //   this.game.spawnNewShape(pickRandomShape());
+  // } 
 });
 
 var game = new Game(canvas, scoreTracker, 25);
