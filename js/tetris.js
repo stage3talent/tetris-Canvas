@@ -38,6 +38,9 @@ class GameState {
     dimensions.height = Math.floor(dimensions.height / scale);
     dimensions.width = Math.floor(dimensions.width / scale);
 
+    this.score = 0;
+    this.scoreDelta = 0;
+
     this.board = this.buildBoard(dimensions, scale);
     this.activeShape = {"shape": [], "position": {}};
 
@@ -276,7 +279,7 @@ class GameBoard {
 
 
 class Game {
-  constructor(canvas, scale = 1) {
+  constructor(canvas, scoreDisplay, scale = 1) {
     this.timeSinceShift = 0;
     this.shiftDelay = 1000;
     this.gameState = new GameState({
@@ -284,6 +287,16 @@ class Game {
       "height": canvas.height
     }, scale);
     this.gameBoard = new GameBoard(canvas, scale);
+    this.scoreDisplay = scoreDisplay;
+  }
+
+  start() {
+    console.log('Game starting!');
+
+    this.updateScore();
+
+    this.spawnNewShape(pickRandomShape());
+    tick();
   }
 
   shift(direction) {
@@ -314,19 +327,36 @@ class Game {
 
   lineCheck() {
     var lines = this.gameState.getCompleteLineRows();
-
-    console.log(lines);
+    var lineCounter = 1;
 
     for (var row in lines) {
+      this.gameState.scoreDelta += lineCounter++;
+
       this.gameState.clearRow(lines[row]);
       this.gameState.shiftDownToRow(lines[row]);
     }
+
+    this.updateScore();
+
+    console.log('scoredeta', this.gameState.scoreDelta);
   }
 
   spawnNewShape(shapeMatrix) {
     console.log('Spawning new shape:');
     console.table(shapeMatrix);
     this.gameState.setNewActiveShape(shapeMatrix);
+  }
+
+  updateScore() {
+    let scoreDelta = this.gameState.scoreDelta;
+
+    this.scoreDisplay.innerHTML = this.gameState.score;
+    this.scoreDisplay.style.fontSize = "5em";
+
+    if (scoreDelta !== 0) {
+      this.scoreDisplay.style.fontSize = "6em";
+      this.scoreDisplay.innerHTML += ' +' + this.gameState.scoreDelta; 
+    }
   }
 
   pause() {
@@ -344,6 +374,15 @@ class Game {
 
     if (this.timeSinceShift > this.shiftDelay) {
       this.timeSinceShift = 0;
+
+      if (this.gameState.scoreDelta !== 0) {
+        console.log('score update');
+
+        this.gameState.score += this.gameState.scoreDelta;
+        this.gameState.scoreDelta = 0;
+        this.updateScore();
+      }
+
       if (!this.shift('down')) {
         this.lineCheck();
 
@@ -369,6 +408,9 @@ function tick(time = 0) {
 }
 
 var canvas = document.getElementById("tetris");
+var scoreTracker = document.getElementById("score-tracker");
+
+console.log(scoreTracker);
 
 document.addEventListener('keydown', (keyEvent) => {
   if (keyEvent.key === "ArrowLeft") {
@@ -396,6 +438,6 @@ document.addEventListener('keydown', (keyEvent) => {
   } 
 });
 
-var game = new Game(canvas, 25);
+var game = new Game(canvas, scoreTracker, 25);
 
-tick();
+game.start();
