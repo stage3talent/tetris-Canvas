@@ -23,12 +23,16 @@ const shapes = [
     [5,5,0],
     [0,5,5],
     [0,0,0]
+  ],
+  [
+    [0,0,6],
+    [0,0,6],
+    [0,6,6]
   ]
 ];
 
-function pickRandomShape(min = 0, max = 5) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
+function pickRandomShape(min = 0, max) {
+  max = max || shapes.length;
 
   return shapes[Math.floor(Math.random() * (max - min)) + min];
 }
@@ -282,6 +286,10 @@ class GameBoard {
             this.ctx.fillStyle = "yellow";
           } else if (value === 5) {
             this.ctx.fillStyle = "lightblue";
+          } else if (value === 6) {
+            this.ctx.fillStyle = "purple";
+          } else {
+            this.ctx.fillStyle = "white";
           }
 
           this.ctx.fillRect(x, y, 1, 1);
@@ -418,6 +426,12 @@ class Game {
         this.lineCheck();
 
         this.spawnNewShape(pickRandomShape());
+
+        if (this.shiftDelay > 10){
+          this.shiftDelay--;
+
+          console.log(this.shiftDelay);
+        }
       }
     }
 
