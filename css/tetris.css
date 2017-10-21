@@ -1,3 +1,31 @@
+#container {
+  position: relative;
+  border: 1px solid black;
+}
+
+#message-box {
+  position: absolute;
+  top: 1em;
+  display: inline-block;
+  height: 50%;
+  width: 50%;
+}
+
+#message-box > * {
+  position: absolute;
+  margin: 10px;
+  padding: 0;
+}
+
+#tetris {
+  border: 3px solid grey;
+  margin: 0;
+}
+
+#alerts {
+  top: 1em;
+}
+
 #score-tracker {
-  font-size: 5em;
+  bottom: 0;
 }

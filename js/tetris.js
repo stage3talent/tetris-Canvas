@@ -49,6 +49,7 @@ class GameState {
     this.activeShape = {"shape": [], "position": {}};
 
     this.isPaused = false;
+    this.playerHasLost = false;
   }
 
   buildBoard(dimensions) {
@@ -59,6 +60,17 @@ class GameState {
     }
 
     return newBoard;
+  }
+
+  reset() {
+    this.board.forEach((row, rowIndex) => {
+      this.clearRow(rowIndex);
+    });
+
+    this.activeShape.shape = [];
+    this.score = 0;
+    this.scoreDelta = 0;
+    this.playerHasLost = false;
   }
 
   setNewActiveShape(shapeMatrix, position) {
@@ -299,7 +311,7 @@ class GameBoard {
 
 
 class Game {
-  constructor(canvas, scoreDisplay, scale = 1) {
+  constructor(canvas, scoreDisplay, messageBox, scale = 1) {
     this.timeSinceShift = 0;
     this.shiftDelay = 1000;
     this.gameState = new GameState({
@@ -308,15 +320,28 @@ class Game {
     }, scale);
     this.gameBoard = new GameBoard(canvas, scale);
     this.scoreDisplay = scoreDisplay;
+    this.messageBox = messageBox;
   }
 
   start() {
-    console.log('Game starting!');
+    this.writeMessage('', '6em');
 
     this.updateScore();
 
     this.spawnNewShape(pickRandomShape());
     tick();
+  }
+
+  reset() {
+    this.gameBoard.fill();
+    this.gameState.reset();
+    this.start();
+  }
+
+  writeMessage(message, color = 'black', size = '5em') {
+    this.messageBox.innerHTML = message;
+    this.messageBox.style.color = color;
+    this.messageBox.style.size = size;
   }
 
   shift(direction) {
@@ -388,19 +413,19 @@ class Game {
     this.gameState.isPaused = !this.gameState.isPaused;
 
     if (this.gameState.isPaused) {
-      console.log('Paused');
+      this.writeMessage('Game paused.', 'orange');
     } else {
-      console.log('Unpaused');
+      this.writeMessage('');
     }
   }
 
   end() {
-    console.log('Game end');
-    this.pause();
+    this.writeMessage('Game over! =(', 'red');
+    this.gameState.playerHasLost = true;
   }
 
   tick(deltaTime) {
-    if (this.gameState.isPaused) { return; }
+    if (this.gameState.isPaused || this.gameState.playerHasLost) { return; }
 
     if (this.timeSinceShift > this.shiftDelay) {
       this.timeSinceShift = 0;
@@ -440,6 +465,7 @@ function tick(time = 0) {
 }
 
 var canvas = document.getElementById("tetris");
+var messageBox = document.getElementById("alerts");
 var scoreTracker = document.getElementById("score-tracker");
 
 document.addEventListener('keydown', (keyEvent) => {
@@ -453,7 +479,9 @@ document.addEventListener('keydown', (keyEvent) => {
     game.rotate();
   } else if (keyEvent.key.toLowerCase() === "p") {
     game.pause();
-  }
+  } else if (keyEvent.key === 'r') {
+    game.reset();
+  } 
   // } else if (keyEvent.key === '1') {
   //   this.game.spawnNewShape(shapes[0]);
   // } else if (keyEvent.key === '2') {
@@ -464,11 +492,9 @@ document.addEventListener('keydown', (keyEvent) => {
   //   this.game.spawnNewShape(shapes[3]);
   // } else if (keyEvent.key === '5') {
   //   this.game.spawnNewShape(shapes[4]);
-  // } else if (keyEvent.key === 'r') {
-  //   this.game.spawnNewShape(pickRandomShape());
-  // } 
+  // }
 });
 
-var game = new Game(canvas, scoreTracker, 25);
+var game = new Game(canvas, scoreTracker, messageBox, 25);
 
 game.start();

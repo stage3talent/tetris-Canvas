@@ -6,9 +6,33 @@
 </head>
 
 <body>
-  <canvas id="tetris" height="500" width="300"></canvas>
+  <table>
+    <tr>
+      <td>Movement:</td>
+      <td>left/right/down</td>
+    </tr>
+    <tr>
+      <td>Flip:</td>
+      <td>up</td>
+    </tr>
+    <tr>
+      <td>Pause:</td>
+      <td>p</td>
+    </tr>
+    <tr>
+      <td>Reset:</td>
+      <td>r</td>
+    </tr>
+  </table>
 
-  <span id="score-tracker"></span>
+  <div id="container">
+    <canvas id="tetris" height="500" width="300"></canvas>
+    <div id="message-box">
+      <div id="alerts"></div>
+      <div id="score-tracker"></div>
+    </div>
+  </div>
+  
   <script src="./js/tetris.js"></script>
   <footer><a href="http://github.com/drakemain/tetris">Source</a></footer>
 </body>
