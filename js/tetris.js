@@ -28,6 +28,11 @@ const shapes = [
     [0,0,6],
     [0,0,6],
     [0,6,6]
+  ],
+  [
+    [0,7,7],
+    [7,7,0],
+    [0,0,0]
   ]
 ];
 
@@ -298,6 +303,8 @@ class GameBoard {
             this.ctx.fillStyle = "lightblue";
           } else if (value === 6) {
             this.ctx.fillStyle = "purple";
+          } else if (value === 7) {
+            this.ctx.fillStyle = "pink";
           } else {
             this.ctx.fillStyle = "white";
           }
