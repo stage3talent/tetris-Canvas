@@ -42,7 +42,7 @@ function pickRandomShape(min = 0, max) {
   return shapes[Math.floor(Math.random() * (max - min)) + min];
 }
 
-class GameState {
+class GameBoard {
   constructor(dimensions, scale) {
     dimensions.height = Math.floor(dimensions.height / scale);
     dimensions.width = Math.floor(dimensions.width / scale);
@@ -272,7 +272,7 @@ class GameState {
   }
 }
 
-class GameBoard {
+class GameRenderer {
   constructor(canvasReference, scale) {
     this.ctx = canvasReference.getContext('2d');
     this.ctx.scale(scale, scale);
@@ -321,11 +321,11 @@ class Game {
   constructor(canvas, scoreDisplay, messageBox, scale = 1) {
     this.timeSinceShift = 0;
     this.shiftDelay = 1000;
-    this.gameState = new GameState({
+    this.board = new GameBoard({
       "width": canvas.width,
       "height": canvas.height
     }, scale);
-    this.gameBoard = new GameBoard(canvas, scale);
+    this.renderer = new GameRenderer(canvas, scale);
     this.scoreDisplay = scoreDisplay;
     this.messageBox = messageBox;
   }
@@ -340,8 +340,8 @@ class Game {
   }
 
   reset() {
-    this.gameBoard.fill();
-    this.gameState.reset();
+    this.renderer.fill();
+    this.board.reset();
     this.start();
   }
 
@@ -352,10 +352,10 @@ class Game {
   }
 
   shift(direction) {
-    if (this.gameState.isPaused) { return; }
+    if (this.board.isPaused) { return; }
 
-    let row = this.gameState.activeShape.position.row;
-    let column = this.gameState.activeShape.position.column;
+    let row = this.board.activeShape.position.row;
+    let column = this.board.activeShape.position.column;
     
     if (direction === 'left') {
       column--;
@@ -365,27 +365,27 @@ class Game {
       row++;
     }
 
-    return this.gameState.moveActiveShape({
+    return this.board.moveActiveShape({
       row,
       column
     });
   }
 
   rotate() {
-    if (this.gameState.isPaused) { return; }
+    if (this.board.isPaused) { return; }
 
-    this.gameState.rotateActiveShape();
+    this.board.rotateActiveShape();
   }
 
   lineCheck() {
-    var lines = this.gameState.getCompleteLineRows();
+    var lines = this.board.getCompleteLineRows();
     var lineCounter = 1;
 
     for (var row in lines) {
-      this.gameState.scoreDelta += lineCounter++;
+      this.board.scoreDelta += lineCounter++;
 
-      this.gameState.clearRow(lines[row]);
-      this.gameState.shiftDownToRow(lines[row]);
+      this.board.clearRow(lines[row]);
+      this.board.shiftDownToRow(lines[row]);
     }
 
     this.updateScore();
@@ -394,10 +394,10 @@ class Game {
   spawnNewShape(shapeMatrix) {
     let spawnPosition = {
       "row": 0,
-      "column": Math.floor(this.gameState.board[0].length / 2) - Math.floor(shapeMatrix[0].length / 2)
+      "column": Math.floor(this.board.board[0].length / 2) - Math.floor(shapeMatrix[0].length / 2)
     };
 
-    var success = this.gameState.setNewActiveShape(shapeMatrix, spawnPosition);
+    var success = this.board.setNewActiveShape(shapeMatrix, spawnPosition);
 
     if (!success) {
       this.end();
@@ -405,21 +405,21 @@ class Game {
   }
 
   updateScore() {
-    let scoreDelta = this.gameState.scoreDelta;
+    let scoreDelta = this.board.scoreDelta;
 
-    this.scoreDisplay.innerHTML = this.gameState.score;
+    this.scoreDisplay.innerHTML = this.board.score;
     this.scoreDisplay.style.fontSize = "5em";
 
     if (scoreDelta !== 0) {
       this.scoreDisplay.style.fontSize = "6em";
-      this.scoreDisplay.innerHTML += ' +' + this.gameState.scoreDelta; 
+      this.scoreDisplay.innerHTML += ' +' + this.board.scoreDelta; 
     }
   }
 
   pause() {
-    this.gameState.isPaused = !this.gameState.isPaused;
+    this.board.isPaused = !this.board.isPaused;
 
-    if (this.gameState.isPaused) {
+    if (this.board.isPaused) {
       this.writeMessage('Game paused.', 'orange');
     } else {
       this.writeMessage('');
@@ -428,18 +428,18 @@ class Game {
 
   end() {
     this.writeMessage('Game over! =(', 'red');
-    this.gameState.playerHasLost = true;
+    this.board.playerHasLost = true;
   }
 
   tick(deltaTime) {
-    if (this.gameState.isPaused || this.gameState.playerHasLost) { return; }
+    if (this.board.isPaused || this.board.playerHasLost) { return; }
 
     if (this.timeSinceShift > this.shiftDelay) {
       this.timeSinceShift = 0;
 
-      if (this.gameState.scoreDelta !== 0) {
-        this.gameState.score += this.gameState.scoreDelta;
-        this.gameState.scoreDelta = 0;
+      if (this.board.scoreDelta !== 0) {
+        this.board.score += this.board.scoreDelta;
+        this.board.scoreDelta = 0;
         this.updateScore();
       }
 
@@ -455,7 +455,7 @@ class Game {
     }
 
     this.timeSinceShift += deltaTime;
-    this.gameBoard.updateFrame(this.gameState.board);
+    this.renderer.updateFrame(this.board.board);
   }
 }
 
