@@ -352,6 +352,7 @@ class Game {
   reset() {
     this.renderer.fill();
     this.board.reset();
+    this.shiftDelay = 1000;
     this.start();
   }
 
