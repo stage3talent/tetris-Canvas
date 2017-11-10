@@ -43,14 +43,11 @@ function pickRandomShape(min = 0, max) {
 }
 
 class GameBoard {
-  constructor(dimensions, scale) {
-    dimensions.height = Math.floor(dimensions.height / scale);
-    dimensions.width = Math.floor(dimensions.width / scale);
-
+  constructor(dimensions) {
     this.score = 0;
     this.scoreDelta = 0;
 
-    this.board = this.buildBoard(dimensions, scale);
+    this.board = this.buildBoard(dimensions);
     this.activeShape = {"shape": [], "position": {}};
 
     this.isPaused = false;
@@ -273,15 +270,27 @@ class GameBoard {
 }
 
 class GameRenderer {
-  constructor(canvasReference, scale) {
+  constructor(canvasReference, dimensions) {
+    let scale = this.getScale({
+      'width': canvasReference.width,
+      'height': canvasReference.height
+    }, dimensions);
+
     this.ctx = canvasReference.getContext('2d');
-    this.ctx.scale(scale, scale);
+    this.ctx.scale(scale.horizontal, scale.vertical);
     this.fill();
   }
 
   fill(color) {
     this.ctx.fillStyle = color || "#1f1f1f";
     this.ctx.fillRect(0,0,canvas.width, canvas.height);  
+  }
+
+  getScale(canvasDimensions, desiredGameSize) {
+    var horizontalScale = canvasDimensions.width / desiredGameSize.width;
+    var verticalScale = canvasDimensions.height / desiredGameSize.height;
+
+    return {'horizontal': horizontalScale, 'vertical': verticalScale};
   }
 
   updateFrame(state) {
@@ -318,16 +327,17 @@ class GameRenderer {
 
 
 class Game {
-  constructor(canvas, scoreDisplay, messageBox, scale = 1) {
+  constructor(canvas, dimensions) {
+  //constructor(canvas, scoreDisplay, messageBox, scale = 1) {
     this.timeSinceShift = 0;
     this.shiftDelay = 1000;
     this.board = new GameBoard({
-      "width": canvas.width,
-      "height": canvas.height
-    }, scale);
-    this.renderer = new GameRenderer(canvas, scale);
-    this.scoreDisplay = scoreDisplay;
-    this.messageBox = messageBox;
+      "width": dimensions.width,
+      "height": dimensions.height
+    });
+    this.renderer = new GameRenderer(canvas, dimensions);
+    this.scoreDisplay = document.getElementById("score-tracker");
+    this.messageBox = document.getElementById("alerts");
   }
 
   start() {
@@ -346,6 +356,8 @@ class Game {
   }
 
   writeMessage(message, color = 'black', size = '5em') {
+    if (!this.messageBox) { return; }
+
     this.messageBox.innerHTML = message;
     this.messageBox.style.color = color;
     this.messageBox.style.size = size;
@@ -405,6 +417,8 @@ class Game {
   }
 
   updateScore() {
+    if (!this.scoreDisplay) { return; }
+
     let scoreDelta = this.board.scoreDelta;
 
     this.scoreDisplay.innerHTML = this.board.score;
@@ -472,8 +486,6 @@ function tick(time = 0) {
 }
 
 var canvas = document.getElementById("tetris");
-var messageBox = document.getElementById("alerts");
-var scoreTracker = document.getElementById("score-tracker");
 
 document.addEventListener('keydown', (keyEvent) => {
   if (keyEvent.key === "ArrowLeft") {
@@ -502,6 +514,11 @@ document.addEventListener('keydown', (keyEvent) => {
   // }
 });
 
-var game = new Game(canvas, scoreTracker, messageBox, 25);
+// var game = new Game(canvas, scoreTracker, messageBox, 25);
+
+var game = new Game(canvas, {
+  'width': 10,
+  'height': 20
+});
 
 game.start();
