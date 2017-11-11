@@ -29,3 +29,7 @@
 #score-tracker {
   bottom: 0;
 }
+
+#top-scores {
+  float: right;
+}
