@@ -1,4 +1,5 @@
 var scoreboard = document.getElementById('scoreboard');
+var submitScore = document.getElementById('submit-score');
 
 if (scoreboard) {
   fetch('/scores').then(res => {
@@ -23,7 +24,7 @@ if (scoreboard) {
 
       position.innerHTML = ++counter;
       playerName.innerHTML = player;
-      playerScore.innerHTML = scores[player];
+      playerScore.innerHTML = scores.players[player];
 
       scoreboard.appendChild(row);
       row.appendChild(position);
@@ -37,3 +38,17 @@ if (scoreboard) {
   console.error('No scoreboard specified.');
 }
 
+document.addEventListener('tetris', event => {
+  if (!submitScore) { return; }
+
+  if (event.detail.trigger === 'start') {
+    submitScore.style.display = 'none';
+  } else if (event.detail.trigger === 'end') {
+    submitScore.score = event.detail.score;
+    submitScore.style.display = 'block';
+  }
+});
+
+submitScore.onsubmit = function(event) {
+  // event.preventDefault();
+}
