@@ -1,6 +1,9 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 
 const tetris = express();
+tetris.use(bodyParser.json());
+tetris.use(bodyParser.urlencoded({ extended: true }));
 
 tetris.get('/', (req, res, next) => {
   console.log('Tetris request.');
@@ -16,6 +19,7 @@ tetris.get('/scores', (req, res) => {
 
 tetris.post('/scores', (req, res) => {
   console.log('Submitting new score');
+  console.log(req.body);
 });
 
 tetris.use(express.static('static'));
