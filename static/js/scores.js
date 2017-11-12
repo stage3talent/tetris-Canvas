@@ -1,24 +1,39 @@
-var topScores = document.getElementById('top-scores');
+var scoreboard = document.getElementById('scoreboard');
 
-fetch('/scores').then(res => {
-  console.log('Fetching scores.');
-  return res.json();
-}).then(scores => {
-  var counter = 0;
+if (scoreboard) {
+  fetch('/scores').then(res => {
+    console.log('Fetching scores.');
+    if (res.status === 200) {
+      return res.json();
+    }
 
-  for (var player in scores) {
-    var row = document.createElement('tr');
-    var position = document.createElement('td');
-    var playerName = document.createElement('td');
-    var playerScore = document.createElement('td');
+    throw new Error("Bad response.");
+  }).then(scores => {
+    if (scores.count === 0) { return; }
 
-    position.innerHTML = ++counter;
-    playerName.innerHTML = player;
-    playerScore.innerHTML = scores[player];
+    scoreboard.style.display = "block"; 
 
-    topScores.appendChild(row);
-    row.appendChild(position);
-    row.appendChild(playerName);
-    row.appendChild(playerScore);
-  }
-});
+    var counter = 0;
+
+    for (var player in scores.players) {
+      var row = document.createElement('tr');
+      var position = document.createElement('td');
+      var playerName = document.createElement('td');
+      var playerScore = document.createElement('td');
+
+      position.innerHTML = ++counter;
+      playerName.innerHTML = player;
+      playerScore.innerHTML = scores[player];
+
+      scoreboard.appendChild(row);
+      row.appendChild(position);
+      row.appendChild(playerName);
+      row.appendChild(playerScore);
+    }
+  }).catch(err => {
+    console.error(err);
+  });
+} else {
+  console.error('No scoreboard specified.');
+}
+

@@ -33,7 +33,16 @@
       <div id="score-tracker"></div>
     </div>
 
-    <table id="top-scores"></table>
+    <table id="scoreboard">
+      <tr>
+        <th>Rank</th>
+        <th>Player</th>
+        <th>Score</th>
+      </tr>
+    </table>
+    <form action="/scores" method="post" id="submit-score">
+      <input type="submit" value="Submit">
+    </form>
   </div>
   
   <script src="./js/tetris.js"></script>

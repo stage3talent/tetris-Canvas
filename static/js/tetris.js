@@ -486,7 +486,7 @@ function tick(time = 0) {
   requestAnimationFrame(tick);
 }
 
-var canvas = document.getElementById("tetris");
+var canvas = document.getElementById('tetris');
 
 document.addEventListener('keydown', (keyEvent) => {
   if (keyEvent.key === "ArrowLeft") {
