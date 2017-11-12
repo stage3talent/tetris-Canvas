@@ -347,6 +347,8 @@ class Game {
 
     this.spawnNewShape(pickRandomShape());
     tick();
+
+    this.dispatchEvent({trigger: 'start'});
   }
 
   reset() {
@@ -354,6 +356,23 @@ class Game {
     this.board.reset();
     this.shiftDelay = 1000;
     this.start();
+  }
+
+  pause() {
+    this.board.isPaused = !this.board.isPaused;
+
+    if (this.board.isPaused) {
+      this.writeMessage('Game paused.', 'orange');
+    } else {
+      this.writeMessage('');
+    }
+  }
+
+  end() {
+    this.writeMessage('Game over! =(', 'red');
+    this.board.playerHasLost = true;
+
+    this.dispatchEvent({trigger: 'end'});
   }
 
   writeMessage(message, color = 'black', size = '5em') {
@@ -431,21 +450,6 @@ class Game {
     }
   }
 
-  pause() {
-    this.board.isPaused = !this.board.isPaused;
-
-    if (this.board.isPaused) {
-      this.writeMessage('Game paused.', 'orange');
-    } else {
-      this.writeMessage('');
-    }
-  }
-
-  end() {
-    this.writeMessage('Game over! =(', 'red');
-    this.board.playerHasLost = true;
-  }
-
   tick(deltaTime) {
     if (this.board.isPaused || this.board.playerHasLost) { return; }
 
@@ -472,6 +476,15 @@ class Game {
     this.timeSinceShift += deltaTime;
     this.renderer.updateFrame(this.board.board);
   }
+
+  dispatchEvent(detail) {
+    var gameEvent = new CustomEvent('tetris', {
+      detail: detail,
+      bubbles: true
+    });
+
+    document.dispatchEvent(gameEvent);
+  }
 }
 
 var deltaTime = 0;
@@ -487,8 +500,9 @@ function tick(time = 0) {
 }
 
 var canvas = document.getElementById('tetris');
+canvas.focus();
 
-document.addEventListener('keydown', (keyEvent) => {
+canvas.addEventListener('keydown', (keyEvent) => {
   if (keyEvent.key === "ArrowLeft") {
     game.shift('left');
   } else if (keyEvent.key === "ArrowRight") {
