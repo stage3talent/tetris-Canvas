@@ -1,6 +1,9 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongo = require('mongodb');
+const monk = require('monk');
 
+const db = monk('localhost:27017/TetrisScores');
 const tetris = express();
 tetris.use(bodyParser.json());
 tetris.use(bodyParser.urlencoded({ extended: true }));
@@ -30,6 +33,10 @@ tetris.listen(3003);
 
 function getScoreboard() {
   var scoreBoard = {};
+
+  db.get('usercollection').find({},{},(e,docs) => {
+    console.log(docs);
+  });
 
   scoreBoard.players = {
     'joe': 25,
