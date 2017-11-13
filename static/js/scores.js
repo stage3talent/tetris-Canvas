@@ -44,11 +44,7 @@ document.addEventListener('tetris', event => {
   if (event.detail.trigger === 'start') {
     submitScore.style.display = 'none';
   } else if (event.detail.trigger === 'end') {
-    submitScore.score = event.detail.score;
+    submitScore.elements.score.value = event.detail.score;
     submitScore.style.display = 'block';
   }
 });
-
-submitScore.onsubmit = function(event) {
-  // event.preventDefault();
-}

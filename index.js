@@ -20,6 +20,8 @@ tetris.get('/scores', (req, res) => {
 tetris.post('/scores', (req, res) => {
   console.log('Submitting new score');
   console.log(req.body);
+
+  res.redirect('/');
 });
 
 tetris.use(express.static('static'));

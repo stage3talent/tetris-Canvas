@@ -372,7 +372,10 @@ class Game {
     this.writeMessage('Game over! =(', 'red');
     this.board.playerHasLost = true;
 
-    this.dispatchEvent({trigger: 'end'});
+    this.dispatchEvent({
+      trigger: 'end',
+      score: this.board.score
+    });
   }
 
   writeMessage(message, color = 'black', size = '5em') {
@@ -479,8 +482,7 @@ class Game {
 
   dispatchEvent(detail) {
     var gameEvent = new CustomEvent('tetris', {
-      detail: detail,
-      bubbles: true
+      detail: detail
     });
 
     document.dispatchEvent(gameEvent);
