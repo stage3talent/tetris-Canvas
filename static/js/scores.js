@@ -10,24 +10,24 @@ if (scoreboard) {
 
     throw new Error("Bad response.");
   }).then(scores => {
-    if (scores.count === 0) { return; }
+    if (scores.length === 0) { return; }
 
     scoreboard.style.display = "block"; 
 
     var counter = 0;
 
-    for (var player in scores.players) {
+    for (var player in scores) {
       var row = document.createElement('tr');
-      var position = document.createElement('td');
+      var rank = document.createElement('td');
       var playerName = document.createElement('td');
       var playerScore = document.createElement('td');
 
-      position.innerHTML = ++counter;
-      playerName.innerHTML = player;
-      playerScore.innerHTML = scores.players[player];
+      rank.innerHTML = ++counter;
+      playerName.innerHTML = scores[player].player;
+      playerScore.innerHTML = scores[player].score;
 
       scoreboard.appendChild(row);
-      row.appendChild(position);
+      row.appendChild(rank);
       row.appendChild(playerName);
       row.appendChild(playerScore);
     }
