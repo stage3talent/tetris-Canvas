@@ -28,10 +28,9 @@ tetris.post('/scores', (req, res) => {
   && (req.body.player.length !== 0)
   && (!isNaN(req.body.score))) {
     console.log('creating new scoreboard entry.');
-    console.log(req.body.player, req.body.player.length);
     var entry = {
       'player': req.body.player,
-      'score': req.body.score
+      'score': Number(req.body.score)
     }
 
     db.get('usercollection').insert(entry, (err, result) => {
@@ -48,7 +47,7 @@ tetris.use(express.static('static'));
 tetris.listen(3003);
 
 function getScoreboard() {
-  return db.get('usercollection').find({},{},(e, docs) => {
+  return db.get('usercollection').find({}, {sort: {'score': -1}}, (e, docs) => {
     return docs;
   });
 }
