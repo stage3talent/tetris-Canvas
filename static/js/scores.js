@@ -43,6 +43,7 @@ document.addEventListener('tetris', event => {
 
   if (event.detail.trigger === 'start') {
     submitScore.style.display = 'none';
+    document.getElementById('tetris').focus();
   } else if (event.detail.trigger === 'end') {
     submitScore.elements.score.value = event.detail.score;
     submitScore.style.display = 'block';

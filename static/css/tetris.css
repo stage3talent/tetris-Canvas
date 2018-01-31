@@ -1,20 +1,22 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
 #container {
-  position: relative;
-  border: 1px solid black;
+  display: flex;
+  height: 100vh
+}
+
+#container > div {
+  flex: 1;
+  align-items: center;
 }
 
 #message-box {
-  position: absolute;
-  top: 1em;
-  display: inline-block;
-  height: 50%;
-  width: 25%;
-}
-
-#message-box > * {
-  position: absolute;
-  margin: 10px;
-  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
 }
 
 #tetris {
@@ -30,14 +32,25 @@
   bottom: 0;
 }
 
+#score-container {
+  display: flex;
+  flex-direction: row;
+}
+
 #scoreboard {
   float: right;
   border: 1px solid black;
   height: 100%;
   display: none;
+  overflow: auto;
 }
 
 #submit-score {
   float: right;
   display: none;
+}
+
+footer {
+  position: fixed;
+  bottom: 0;
 }

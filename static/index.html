@@ -6,48 +6,52 @@
 </head>
 
 <body>
-  <table>
-    <tr>
-      <td>Movement:</td>
-      <td>left/right/down</td>
-    </tr>
-    <tr>
-      <td>Flip:</td>
-      <td>up</td>
-    </tr>
-    <tr>
-      <td>Pause:</td>
-      <td>p</td>
-    </tr>
-    <tr>
-      <td>Reset:</td>
-      <td>r</td>
-    </tr>
-  </table>
-
   <div id="container">
-    <canvas id="tetris" height="500" width="300" tabindex="1"></canvas>
-
     <div id="message-box">
-      <div id="alerts"></div>
+      <div id="alerts">Tetris</div>
       <div id="score-tracker"></div>
+      <table>
+          <tr>
+            <td>Movement:</td>
+            <td>left/right/down</td>
+          </tr>
+          <tr>
+            <td>Flip:</td>
+            <td>up</td>
+          </tr>
+          <tr>
+            <td>Pause:</td>
+            <td>p</td>
+          </tr>
+          <tr>
+            <td>Reset:</td>
+            <td>r</td>
+          </tr>
+        </table>
     </div>
 
-    <table id="scoreboard">
-      <tr>
-        <th>Rank</th>
-        <th>Player</th>
-        <th>Score</th>
-      </tr>
-    </table>
-    <form action="/scores" method="post" id="submit-score">
-      <h2>Submit your score!</h2>
-      <input type="text" placeholder="Enter your name" name="player">
+    <div>
+      <canvas id="tetris" height="500" width="300" tabindex="1"></canvas>
+    </div>
 
-      <input type="hidden" name="score" value=0>
-
-      <input type="submit" value="Submit">
-    </form>
+    <div id="score-container">
+      <form action="/scores" method="post" id="submit-score">
+        <h2>Submit your score!</h2>
+        <input type="text" placeholder="Enter your name" name="player">
+  
+        <input type="hidden" name="score" value=0>
+  
+        <input type="submit" value="Submit">
+      </form>
+      <table id="scoreboard">
+        <tr>
+          <th>Rank</th>
+          <th>Player</th>
+          <th>Score</th>
+        </tr>
+      </table>
+    </div>
+   
   </div>
   
   <script src="./js/tetris.js"></script>

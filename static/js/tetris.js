@@ -328,7 +328,6 @@ class GameRenderer {
 
 class Game {
   constructor(canvas, dimensions) {
-  //constructor(canvas, scoreDisplay, messageBox, scale = 1) {
     this.timeSinceShift = 0;
     this.shiftDelay = 1000;
     this.board = new GameBoard({
@@ -381,7 +380,7 @@ class Game {
   writeMessage(message, color = 'black', size = '5em') {
     if (!this.messageBox) { return; }
 
-    this.messageBox.innerHTML = message;
+    this.messageBox.textContent = message;
     this.messageBox.style.color = color;
     this.messageBox.style.size = size;
   }
