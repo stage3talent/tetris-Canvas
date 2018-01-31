@@ -517,21 +517,8 @@ canvas.addEventListener('keydown', (keyEvent) => {
     game.pause();
   } else if (keyEvent.key === 'r') {
     game.reset();
-  } 
-  // } else if (keyEvent.key === '1') {
-  //   this.game.spawnNewShape(shapes[0]);
-  // } else if (keyEvent.key === '2') {
-  //   this.game.spawnNewShape(shapes[1]);
-  // } else if (keyEvent.key === '3') {
-  //   this.game.spawnNewShape(shapes[2]);
-  // } else if (keyEvent.key === '4') {
-  //   this.game.spawnNewShape(shapes[3]);
-  // } else if (keyEvent.key === '5') {
-  //   this.game.spawnNewShape(shapes[4]);
-  // }
+  }
 });
-
-// var game = new Game(canvas, scoreTracker, messageBox, 25);
 
 var game = new Game(canvas, {
   'width': 10,
