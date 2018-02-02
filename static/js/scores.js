@@ -21,15 +21,23 @@ if (scoreboard) {
       var rank = document.createElement('td');
       var playerName = document.createElement('td');
       var playerScore = document.createElement('td');
+      var playerDate = document.createElement('td');
 
-      rank.innerHTML = ++counter;
-      playerName.innerHTML = scores[player].player;
-      playerScore.innerHTML = scores[player].score;
+      rank.textContent = ++counter;
+      playerName.textContent = scores[player].player;
+      playerScore.textContent = scores[player].score;
+
+      if (scores[player].date === -1) {
+        playerDate.textContent = '-';
+      } else {
+        playerDate.textContent = formatDate(new Date(scores[player].date));
+      }
 
       scoreboard.appendChild(row);
       row.appendChild(rank);
       row.appendChild(playerName);
       row.appendChild(playerScore);
+      row.appendChild(playerDate);
     }
   }).catch(err => {
     console.error(err);
@@ -49,3 +57,15 @@ document.addEventListener('tetris', event => {
     submitScore.style.display = 'block';
   }
 });
+
+function formatDate(date) {
+  let dateStr = '';
+  let months = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+  ];
+
+  dateStr += months[date.getMonth()] + ' ' + date.getDate() + ' ' + date.getFullYear();
+
+  return dateStr;
+}

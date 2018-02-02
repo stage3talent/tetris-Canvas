@@ -30,7 +30,8 @@ tetris.post('/scores', (req, res) => {
     console.log('creating new scoreboard entry.');
     var entry = {
       'player': req.body.player,
-      'score': Number(req.body.score)
+      'score': Number(req.body.score),
+      'date': new Date().getTime()
     }
 
     db.get('usercollection').insert(entry, (err, result) => {
