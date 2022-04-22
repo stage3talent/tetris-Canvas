@@ -1,0 +1,49 @@
+{
+    "version": "0.2",
+    "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
+    "language": "en",
+    "minWordLength": 2,
+    "flagWords": [
+        "abel",
+        "fro",
+        "het",
+        "nad",
+        "nd",
+        "hte",
+        "teh"
+    ],
+    "words": [
+        "Tetris"
+    ],
+    "ignorePaths": [
+        ".git",
+        ".yarn",
+        ".vscode",
+        ".git*",
+        ".markdownlint.yml",
+        ".npmrc",
+        "**/*.bash",
+        "**/*.csv",
+        "**/*.dump",
+        "**/*.py",
+        "**/*.svg",
+        "**/*.sh",
+        "**/*.js",
+        "**/*.json",
+        "**/*.yml",
+        "**/*.yaml",
+        "**/*.docx",
+        "**/*.pptx",
+        "**/*.xlsx",
+        "**/*.zip",
+        "**/Dockerfile",
+        "**/Dockerfile.*",
+        "cspell.json",
+        "node_modules",
+        "package.json",
+        "package-lock.json",
+        "yarn.lock",
+        "build/**",
+        ".github/**"
+    ]
+}
