@@ -11,6 +11,16 @@ The oldest version of node.js that is known to run this application is version 6
 
 Once you run the applilcation (node index.js), it will respond to requests from http://localhost:3003 to play in the browser.
 
+## Routes in the application
+
+The routes that the application will respond to are:
+
+|Route|Purpose|
+|-|-|
+|/|Normally, the application just reponds to the root route to play the game.|
+|/healthy|To test the application to see if it is running.  It should repond with a small 'I am alive' message with a timestamp.|
+|/scores|Retrieve or set the high scores.  Will redirect back to the root.|
+
 ## Customization
 
 It supports the following customizations through environment variables:
