@@ -16,6 +16,11 @@ tetris.get('/', (req, res, next) => {
   next();
 });
 
+tetris.get('/healthy', (req, res) => {
+  console.log('Health check recieved.');
+  res.status(200).send('I am alive on ' + new Date(Date.now()).toGMTString());
+});
+
 tetris.get('/scores', (req, res) => {
   console.log('Fetching scores.');
 
