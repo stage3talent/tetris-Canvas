@@ -25,10 +25,7 @@ The routes that the application will respond to are:
 
 It supports the following customizations through environment variables:
 
-### LISTENPORT
-
-The default LISTENPORT is 3003 but may be overridden by setting this env var.
-
-### STORAGEPATH
-
-The default STORAGEPATH is ./TetrisScores.  If will create this folder.  Each high score is stored as a new file in this folder.  The filename is a Hash value of the user's name.  The data stored is JSON and also includes the user's name.  The hashing of the name to generate the filename makes it hard to figure out which is which, but peeking at the JSON inside will tell you with data corresponds to which user.
+|ENV var|Explanation|
+|-|-|
+|LISTENPORT|The default LISTENPORT is 3003 but may be overridden by setting this env var.|
+|STORAGEPATH|The default STORAGEPATH is ./TetrisScores.  If will create this folder.  Each high score is stored as a new file in this folder.  The filename is a Hash value of the user's name.  The data stored is JSON and also includes the user's name.  The hashing of the name to generate the filename makes it hard to figure out which is which, but peeking at the JSON inside will tell you with data corresponds to which user.|
